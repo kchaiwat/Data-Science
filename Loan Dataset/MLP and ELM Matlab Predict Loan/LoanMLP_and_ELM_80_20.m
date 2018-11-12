@@ -23,62 +23,41 @@ xTest = Xnorm(I(445:end),:);
 tTrain = T(I(1:444),:);
 % แบ่ง data สำหรับ tTest ตั้งแต่ 445-554 20%
 tTest = T(I(445:end),:);
-
 clear X T
 
-%Model MLP-BP Learning : 1 hidden layer
-tic;
- n = 0.01;
- L = 18; %Hidden node
- wi = rands(size(xTrain,2),L);
- bi = rands(1,L);
- wo = rands(L,size(tTrain,2));
- bo = rands(1,size(tTrain,2));
- E = [];
- for k = 1:500
-     for i = 1:size(xTrain,1)
-         H = logsig(xTrain(i,:)*wi + bi);
-         Y = logsig(H*wo + bo);
-         
-         e = tTrain(i,:) - Y;
-         
-         dy = e .* Y .* (1-Y);
-         dH = H .* (1-H) .* (dy*wo');
-         
-         wo = wo + n * H'*dy;
-         bo = bo + n * dy;
-         wi = wi + n * xTrain(i,:)'*dH;
-         bi = bi + n * dH;
-     end
-     H = logsig(xTrain*wi + repmat(bi,size(xTrain,1),1));
-     Y = logsig(H*wo + repmat(bo,size(xTrain,1),1));
-     E(k) = mse(tTrain - Y);
-     plot(E); title('MLP-BP Training');
-     xlabel('Iteration (n) '); ylabel('MSE');
-     
-     drawnow;
- end
- error_of_MLP_BP = E(10)
- %Train Pedic
- H = logsig(xTrain*wi + repmat(bi,size(xTrain,1),1));
- Y = logsig(H*wo + repmat(bo,size(xTrain,1),1));
-
- %Performance of Traning
- [tmp,Index1] = max(Y,[],2);
- [tmp,Index2] = max(tTrain,[],2);
- fprintf('Training 80percent of DATA acc.: %f \n',mean(mean(Index1 == Index2))*100);
- 
- %Testing  Pedic
- H = logsig(xTest*wi + repmat(bi,size(xTest,1),1));
- Y = logsig(H*wo + repmat(bo,size(xTest,1),1));
- 
- % Performance of Testing
- [tmp,Index1] = max(Y,[],2);
- [tmp,Index2] = max(tTest,[],2);
- fprintf('Testing 20percent of DATA acc.: %f \n',mean(mean(Index1 == Index2))*100);
-toc;
 %%%%%%%%%%%%%%%%%%%%%%%%%% ELM %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-clear all;
+
+tic;
+%Training phase
+ dim = size(xTrain,2);
+ hidden_node = 11;
+ input_weight = unifrnd(-1,1,dim,hidden_node);
+ bias = unifrnd(-1,1,1,hidden_node);
+ hidden_layer = 1./(1+exp(-xTrain*input_weight+repmat(bias,size(xTrain,1),1)));
+ output_weight = pinv(hidden_layer)*tTrain;
+ output_train = hidden_layer*output_weight;
+ 
+ %Test phase
+ hidden_layer = 1./(1+exp(-xTest*input_weight+repmat(bias,size(xTest,1),1)));
+ output_test = hidden_layer*output_weight;
+ 
+Y = output_train;
+  %Performance of Traning
+  [tmp,Index1] = max(Y,[],2);
+  [tmp,Index2] = max(tTrain,[],2);
+  fprintf('Training 70percent of DATA acc.: %f \n',mean(mean(Index1 == Index2))*100);
+
+Y = output_test;
+  % Performance of Testing
+  [tmp,Index1] = max(Y,[],2);
+  [tmp,Index2] = max(tTest,[],2);
+  fprintf('Testing 30percent of DATA acc.: %f \n',mean(mean(Index1 == Index2))*100);
+
+ error_of_ELM =  mse(tTrain-output_train)
+ 
+  toc;
+
+%%%%%%%%%%%%%%%%%%Model MLP-BP Learning : 1 hidden layer%%%%%%%%%%%%%%%%%%%
 % รับข้อมูลเข้ามา
 dataset = load('LoneMATLAB.txt');
 order = dataset(:,1:1);
@@ -103,35 +82,60 @@ xTest = Xnorm(I(445:end),:);
 tTrain = T(I(1:444),:);
 % แบ่ง data สำหรับ tTest ตั้งแต่ 445-554 20%
 tTest = T(I(445:end),:);
-
 clear X T
 
 tic;
+ n = 0.01;
+ L = 11; %Hidden node
+ wi = rands(size(xTrain,2),L);
+ bi = rands(1,L);
+ wo = rands(L,size(tTrain,2));
+ bo = rands(1,size(tTrain,2));
+ E = [];
+ for k = 1:500
+     for i = 1:size(xTrain,1)
+         H = logsig(xTrain(i,:)*wi + bi);
+         Y = logsig(H*wo + bo);
+         
+         e = tTrain(i,:) - Y;
+         
+         dy = e .* Y .* (1-Y);
+         dH = H .* (1-H) .* (dy*wo');
+         
+         wo = wo + n * H'*dy;
+         bo = bo + n * dy;
+         wi = wi + n * xTrain(i,:)'*dH;
+         bi = bi + n * dH;
+     end
+     H = logsig(xTrain*wi + repmat(bi,size(xTrain,1),1));
+     Y = logsig(H*wo + repmat(bo,size(xTrain,1),1));
+     E(k) = mse(tTrain - Y);
+     plot(E); title('ELM Training and MLP-BP');
+     hold on
+     test(k) = error_of_ELM;
+     plot(test);
+     hold off
+     xlabel('Iteration (n) '); ylabel('MSE');
+     
+     drawnow;
+ end
+ %Train Pedic
+ H = logsig(xTrain*wi + repmat(bi,size(xTrain,1),1));
+ Y = logsig(H*wo + repmat(bo,size(xTrain,1),1));
 
-%Training phase
- dim = size(xTrain,2);
- hidden_node = 8;
- input_weight = unifrnd(-1,1,dim,hidden_node);
- bias = unifrnd(-1,1,1,hidden_node);
- hidden_layer = 1./(1+exp(-xTrain*input_weight+repmat(bias,size(xTrain,1),1)));
- output_weight = pinv(hidden_layer)*tTrain;
- output_train = hidden_layer*output_weight;
+ %Performance of Traning
+ [tmp,Index1] = max(Y,[],2);
+ [tmp,Index2] = max(tTrain,[],2);
+ fprintf('Training 70percent of DATA acc.: %f \n',mean(mean(Index1 == Index2))*100);
  
- %Test phase
- hidden_layer = 1./(1+exp(-xTest*input_weight+repmat(bias,size(xTest,1),1)));
- output_test = hidden_layer*output_weight;
+ %Testing  Pedic
+ H = logsig(xTest*wi + repmat(bi,size(xTest,1),1));
+ Y = logsig(H*wo + repmat(bo,size(xTest,1),1));
  
- error_of_ELM =  mse(tTrain-output_train)
- 
-Y = output_train;
-  %Performance of Traning
-  [tmp,Index1] = max(Y,[],2);
-  [tmp,Index2] = max(tTrain,[],2);
-  fprintf('Training 80percent of DATA acc.: %f \n',mean(mean(Index1 == Index2))*100);
+ % Performance of Testing
+ [tmp,Index1] = max(Y,[],2);
+ [tmp,Index2] = max(tTest,[],2);
+ fprintf('Testing 30percent of DATA acc.: %f \n',mean(mean(Index1 == Index2))*100);
 
-Y = output_test;
-  % Performance of Testing
-  [tmp,Index1] = max(Y,[],2);
-  [tmp,Index2] = max(tTest,[],2);
-  fprintf('Testing 20percent of DATA acc.: %f \n',mean(mean(Index1 == Index2))*100);
-toc;
+ error_of_MLP_BP = E(k)
+ toc;
