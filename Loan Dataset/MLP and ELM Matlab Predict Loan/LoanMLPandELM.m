@@ -8,7 +8,7 @@ xmin = min(x); %ค่าต่ำสุด
 % normalize ปรับให้ data ตั้งแต่คอลัม 1-4 อยู่ในช่วง 0-1
 Xnorm = (x-xmin)./(xmax-xmin);
 % T คือ target 0 1
-T = dataset(:,13:end);
+T = dataset(:,13:14);
 % sz คือ size ของ data ทั้งหมด เท่ากับ 554
 sz = size(dataset,1);
 % I คือ Random permutation สุ่มค่าจำนวน 554 เป็นการสลับค่าไปมาจนถึง 554
@@ -23,11 +23,10 @@ xTest = Xnorm(I(389:end),:);
 tTrain = T(I(1:388),:);
 % แบ่ง data สำหรับ tTest ตั้งแต่ 389-554 30%
 tTest = T(I(389:end),:);
-
+clear X T
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% ELM %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-clear X T
 tic;
 %Training phase
  dim = size(xTrain,2);
@@ -67,7 +66,7 @@ xmin = min(x); %ค่าต่ำสุด
 % normalize ปรับให้ data ตั้งแต่คอลัม 1-4 อยู่ในช่วง 0-1
 Xnorm = (x-xmin)./(xmax-xmin);
 % T คือ target 0 1
-T = dataset(:,13:end);
+T = dataset(:,13:14);
 % sz คือ size ของ data ทั้งหมด เท่ากับ 554
 sz = size(dataset,1);
 % I คือ Random permutation สุ่มค่าจำนวน 554 เป็นการสลับค่าไปมาจนถึง 554
@@ -82,9 +81,9 @@ xTest = Xnorm(I(389:end),:);
 tTrain = T(I(1:388),:);
 % แบ่ง data สำหรับ tTest ตั้งแต่ 389-554 30%
 tTest = T(I(389:end),:);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear X T
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 tic;
  n = 0.01;
  L = 11; %Hidden node
