@@ -24,10 +24,10 @@ tTrain = T(I(1:388),:);
 % แบ่ง data สำหรับ tTest ตั้งแต่ 389-554 30%
 tTest = T(I(389:end),:);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% ELM %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+clear X T
 tic;
 %Training phase
  dim = size(xTrain,2);
@@ -42,6 +42,8 @@ tic;
  hidden_layer = 1./(1+exp(-xTest*input_weight+repmat(bias,size(xTest,1),1)));
  output_test = hidden_layer*output_weight;
  
+ error_of_ELM =  mse(tTrain-output_train)
+ 
 Y = output_train;
   %Performance of Traning
   [tmp,Index1] = max(Y,[],2);
@@ -53,12 +55,9 @@ Y = output_test;
   [tmp,Index1] = max(Y,[],2);
   [tmp,Index2] = max(tTest,[],2);
   fprintf('Testing 30percent of DATA acc.: %f \n',mean(mean(Index1 == Index2))*100);
-
- error_of_ELM =  mse(tTrain-output_train)
- 
-  toc;
-
+toc;
 %%%%%%%%%%%%%%%%%%Model MLP-BP Learning : 1 hidden layer%%%%%%%%%%%%%%%%%%%
+
 % รับข้อมูลเข้ามา
 dataset = load('LoneMATLAB.txt');
 order = dataset(:,1:1);
@@ -84,8 +83,8 @@ tTrain = T(I(1:388),:);
 % แบ่ง data สำหรับ tTest ตั้งแต่ 389-554 30%
 tTest = T(I(389:end),:);
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear X T
-
 tic;
  n = 0.01;
  L = 11; %Hidden node
@@ -121,6 +120,7 @@ tic;
      
      drawnow;
  end
+ error_of_MLP_BP = E(k)
  %Train Pedic
  H = logsig(xTrain*wi + repmat(bi,size(xTrain,1),1));
  Y = logsig(H*wo + repmat(bo,size(xTrain,1),1));
@@ -138,6 +138,4 @@ tic;
  [tmp,Index1] = max(Y,[],2);
  [tmp,Index2] = max(tTest,[],2);
  fprintf('Testing 30percent of DATA acc.: %f \n',mean(mean(Index1 == Index2))*100);
-
- error_of_MLP_BP = E(k)
- toc;
+toc;
