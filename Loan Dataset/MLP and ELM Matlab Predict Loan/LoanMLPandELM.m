@@ -55,7 +55,8 @@ Y = output_test;
   [tmp,Index2] = max(tTest,[],2);
   fprintf('Testing 30percent of DATA acc.: %f \n',mean(mean(Index1 == Index2))*100);
 toc;
-%%%%%%%%%%%%%%%%%%Model MLP-BP Learning : 1 hidden layer%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % รับข้อมูลเข้ามา
 dataset = load('LoneMATLAB.txt');
@@ -81,9 +82,9 @@ xTest = Xnorm(I(389:end),:);
 tTrain = T(I(1:388),:);
 % แบ่ง data สำหรับ tTest ตั้งแต่ 389-554 30%
 tTest = T(I(389:end),:);
-clear X T
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%Model MLP-BP Learning : 1 hidden layer%%%%%%%%%%%%%%%%%%%
+clear X T
 tic;
  n = 0.01;
  L = 11; %Hidden node

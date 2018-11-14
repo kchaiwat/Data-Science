@@ -56,8 +56,7 @@ Y = output_test;
  error_of_ELM =  mse(tTrain-output_train)
  
   toc;
-
-%%%%%%%%%%%%%%%%%%Model MLP-BP Learning : 1 hidden layer%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % รับข้อมูลเข้ามา
 dataset = load('LoneMATLAB.txt');
 order = dataset(:,1:1);
@@ -82,6 +81,8 @@ xTest = Xnorm(I(445:end),:);
 tTrain = T(I(1:444),:);
 % แบ่ง data สำหรับ tTest ตั้งแต่ 445-554 20%
 tTest = T(I(445:end),:);
+
+%%%%%%%%%%%%%%%%%%Model MLP-BP Learning : 1 hidden layer%%%%%%%%%%%%%%%%%%%
 clear X T
 
 tic;
