@@ -1,6 +1,6 @@
 close all;clear all;clc;
 % รับข้อมูลเข้ามา
-dataset = load('LoneMATLAB.txt');
+dataset = load('LoanMATLAB.txt');
 order = dataset(:,1:1);
 x = dataset(:,2:12);
 xmax = max(x); %ค่าสูงสุด
